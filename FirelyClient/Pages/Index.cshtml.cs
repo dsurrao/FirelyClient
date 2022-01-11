@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using Microsoft.Extensions.Configuration;
+using System.Globalization;
 
 namespace FirelyClient.Pages
 {
@@ -16,20 +17,18 @@ namespace FirelyClient.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
 
-        public List<string> Names;
+        public List<string> Patients;
 
         public IndexModel(ILogger<IndexModel> logger,
             IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
-            Names = new List<string>();
+            Patients = new List<string>();
         }
 
         public void OnGet()
         {
-            Console.WriteLine("OnGet");
-
             var settings = new FhirClientSettings
             {
                 PreferredFormat = ResourceFormat.Json,
@@ -41,21 +40,65 @@ namespace FirelyClient.Pages
 
             foreach (var e in result.Entry)
             {
-                // Let's write the fully qualified url for the resource to the console:
-                Console.WriteLine("Full url for this resource: " + e.FullUrl);
+                Patients.Add(GetPatientDescription((Patient)e.Resource));
+            }
+        }
 
-                var pat_entry = (Patient)e.Resource;
+        private string GetPatientDescription(Patient patient)
+        {
+            string name = "", gender = "", age = "";
 
-                // Do something with this patient, for example write the family name that's in the first
-                // element of the name list to the console:
-                //Console.WriteLine("Patient's last name: " + pat_entry.Name[0].Family);
-                if (pat_entry.Name.Count > 0)
+            if (patient.Name.Count > 0)
+            {
+                if (patient.Name[0].Family != null)
                 {
-                    Names.Add(pat_entry.Name[0].Family + ", "
-                        + pat_entry.Name[0].Given.First());
-                    Console.WriteLine("Patient's last name: " + pat_entry.Name[0].Family);
+                    name += patient.Name[0].Family;
+                }
+
+                if (!name.Equals("")) name += ", ";
+
+                foreach (var given in patient.Name[0].Given)
+                {
+                    name += given + " ";
                 }
             }
+
+            gender = patient.Gender + ", ";
+
+            try
+            {
+                var birthDate = DateTime.Parse(patient.BirthDate);
+                age = $"{CalculateAge(birthDate)} y";
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Unable to parse '{0}'", patient.BirthDate);
+            }
+
+            return $"{name} ({gender}{age})";
+        }
+
+        private int CalculateAge(DateTime dateTime)
+        {
+            DateTime currentDate = DateTime.Now;
+            int age = currentDate.Year - dateTime.Year;
+
+            if (age > 0)
+            {
+                if (currentDate.Month == dateTime.Month)
+                {
+                    if (currentDate.Day < dateTime.Day)
+                    {
+                        age--;
+                    }
+                }
+                else if (currentDate.Month < dateTime.Month)
+                {
+                    age--;
+                }
+            }
+
+            return age;
         }
     }
 }

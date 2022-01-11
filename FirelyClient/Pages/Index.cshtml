@@ -8,10 +8,36 @@
     <h1 class="display-4">Patient List</h1>
 </div>
 <div>
-    <ul class="list-unstyled">
-        @foreach (var name in Model.Names)
+    <ul class="list-group">
+        @foreach (var patient in Model.Patients)
         {
-            <li>@name</li>
-        }
+            <li class="list-group-item"
+                data-toggle="modal"
+                data-target="#exampleModalScrollable"
+                data-patient="@patient">@patient</li>
+            }
     </ul>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#exampleModalScrollable').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); 
+            var recipient = button.data('patient'); 
+            var modal = $(this);
+            modal.find('.modal-body').text(recipient);
+        })
+    </script>
+
 </div>
+
