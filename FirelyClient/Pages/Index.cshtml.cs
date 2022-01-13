@@ -17,14 +17,16 @@ namespace FirelyClient.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
 
-        public List<string> Patients;
+        //public List<string> Patients;
+        public List<Patient> Patients;
 
         public IndexModel(ILogger<IndexModel> logger,
             IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
-            Patients = new List<string>();
+            //Patients = new List<string>();
+            Patients = new List<Patient>();
         }
 
         public void OnGet()
@@ -37,14 +39,14 @@ namespace FirelyClient.Pages
             };
             var client = new FhirClient(_configuration["FHIRServer"], settings);
             var result = client.Search<Patient>();
-
             foreach (var e in result.Entry)
             {
-                Patients.Add(GetPatientDescription((Patient)e.Resource));
+                //Patients.Add(GetPatientDescription((Patient)e.Resource));
+                Patients.Add((Patient)e.Resource);
             }
         }
 
-        private string GetPatientDescription(Patient patient)
+        public string GetPatientDescription(Patient patient)
         {
             string name = "", gender = "", age = "";
 

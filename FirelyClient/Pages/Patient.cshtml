@@ -1,0 +1,20 @@
+﻿@page
+@model FirelyClient.Pages.PatientModel
+@{
+    ViewData["Title"] = "Patient!";
+}
+
+<h2>Conditions</h2>
+@{
+    if (Model.Conditions.Count == 0)
+    {
+        <p>No recorded conditions.</p>
+    }
+    else
+    {
+        foreach (var condition in Model.Conditions)
+        {
+            @condition;
+        }
+    }
+}
