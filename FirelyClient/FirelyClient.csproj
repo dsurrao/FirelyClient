@@ -6,8 +6,12 @@
 
   <ItemGroup>
     <None Remove="Hl7.Fhir.R4" />
+    <None Remove="Pages\Utils\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hl7.Fhir.R4" Version="3.8.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\Utils\" />
   </ItemGroup>
 </Project>

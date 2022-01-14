@@ -4,7 +4,7 @@
     ViewData["Title"] = "Patient!";
 }
 
-<h2>Conditions</h2>
+<h2>@{ @Model.Patient} conditions</h2>
 @{
     if (Model.Conditions.Count == 0)
     {
@@ -12,9 +12,11 @@
     }
     else
     {
-        foreach (var condition in Model.Conditions)
-        {
-            @condition;
-        }
+        <ul class="list-group">
+            @foreach (var condition in Model.Conditions)
+            {
+            <li>@condition</li>
+            }
+        </ul>
     }
 }

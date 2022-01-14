@@ -1,4 +1,5 @@
 ﻿@page
+@using FirelyClient.Pages.Utils
 @model IndexModel
 @{
     ViewData["Title"] = "Patient List";
@@ -17,7 +18,7 @@
                 data-patient="@patient">@patient</li>*@
             <li class="list-group-item">
                 <a href="Patient?id=@patient.Id">
-                    @Model.GetPatientDescription(patient);
+                    @PatientUtils.GetPatientDescription(patient)
                 </a>
             </li>
         }
