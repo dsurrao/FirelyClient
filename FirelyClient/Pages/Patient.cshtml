@@ -4,19 +4,80 @@
     ViewData["Title"] = "Patient!";
 }
 
-<h2>@{ @Model.Patient} conditions</h2>
-@{
-    if (Model.Conditions.Count == 0)
-    {
-        <p>No recorded conditions.</p>
-    }
-    else
-    {
-        <ul class="list-group">
-            @foreach (var condition in Model.Conditions)
-            {
-            <li>@condition</li>
+<h2>@{ @Model.Patient}</h2>
+
+<table>
+    <tr style="vertical-align: top">
+        <td>
+            <h3>Conditions</h3>
+            @{
+                if (Model.Conditions.Count == 0)
+                {
+                    <p>No recorded conditions.</p>
+                }
+                else
+                {
+                    <p>
+                        <ul class="list-group">
+                            @foreach (var condition in Model.Conditions)
+                            {
+                                <li>@condition</li>
+                            }
+                        </ul>
+                    </p>
+                }
             }
-        </ul>
-    }
-}
+        </td>
+        <td>
+            <h3>Observations</h3>
+            @{
+                if (Model.Observations.Count == 0)
+                {
+                    <p>No recorded observations.</p>
+                }
+                else
+                {
+                    @foreach (var observation in Model.Observations)
+                    {
+                        @Html.Raw(@observation)
+                    }
+                }
+            }
+        </td>
+    </tr>
+    <tr style="vertical-align: top">
+        <td>
+            <h3>Medications</h3>
+            @{
+                if (Model.Medications.Count == 0)
+                {
+                    <p>No recorded medications.</p>
+                }
+                else
+                {
+                    <p>
+                        <ul class="list-group">
+                            @foreach (var medication in Model.Medications)
+                            {
+                                <li>@medication</li>
+                            }
+                        </ul>
+                    </p>
+                }
+            }
+        </td>
+        <td>
+            <h3>Encounters</h3>
+            @{
+                if (Model.Encounters.Count == 0)
+                {
+                    <p>No recorded encounters.</p>
+                }
+                else
+                {
+                    @foreach (var encounter in Model.Encounters) @Html.Raw(encounter)
+                }
+            }
+        </td>
+    </tr>
+</table>
