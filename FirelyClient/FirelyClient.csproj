@@ -7,11 +7,15 @@
   <ItemGroup>
     <None Remove="Hl7.Fhir.R4" />
     <None Remove="Pages\Utils\" />
+    <None Remove="Pages\Shared\ViewComponents\" />
+    <None Remove="Pages\Shared\Components\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hl7.Fhir.R4" Version="3.8.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\Utils\" />
+    <Folder Include="Pages\Shared\ViewComponents\" />
+    <Folder Include="Pages\Shared\Components\" />
   </ItemGroup>
 </Project>
