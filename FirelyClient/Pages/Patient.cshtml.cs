@@ -49,10 +49,7 @@ namespace FirelyClient.Pages
             Task<Patient> patientTask = client.ReadAsync<Patient>("Patient/" + id);
             Task<Bundle> conditionTask = client.SearchAsync<Condition>(
                 new string[] { "patient=" + id });
-
-            // Firely server bug reported:
-            // https://github.com/FirelyTeam/spark/issues/436#issuecomment-1013732001
-            Task<Bundle> medicationTask = client.SearchAsync<Medication>(
+            Task<Bundle> medicationTask = client.SearchAsync<MedicationRequest>(
                 new string[] { "patient=" + id });
 
             Task<Bundle> observationTask = client.SearchAsync<Observation>(
@@ -71,14 +68,14 @@ namespace FirelyClient.Pages
             foreach (var e in conditionBundle.Entry)
             {
                 var condition = (Condition)e.Resource;
-                var conditionText = "";
+                var conditionText = condition.RecordedDate.ToString() + " ";
                 if (condition.Code.Coding.Count > 0)
                 {
-                    conditionText = condition.Code.Coding[0].Display;
+                    conditionText += condition.Code.Coding[0].Display;
                 }
                 else
                 {
-                    conditionText = condition.Code.Text;
+                    conditionText += condition.Code.Text;
                 }
                 Conditions.Add(conditionText);
             }
@@ -87,20 +84,9 @@ namespace FirelyClient.Pages
             {
                 try
                 {
-                    var medication = (Medication)e.Resource;
-                    var medicationText = "";
-                    if (medication.Code != null)
-                    {
-                        if (medication.Code.Coding.Count > 0)
-                        {
-                            medicationText = medication.Code.Coding[0].Display;
-                        }
-                        else if (medication.Code.Text != null)
-                        {
-                            medicationText = medication.Code.Text;
-                        }
-                    }
-
+                    var medication = (MedicationRequest)e.Resource;
+                    var medicationText = medication.AuthoredOn + " "
+                        + ((ResourceReference) medication.Medication).Display;
                     Medications.Add(medicationText);
                 }
                 catch (InvalidCastException)
@@ -111,12 +97,13 @@ namespace FirelyClient.Pages
 
             foreach (var e in observationBundle.Entry)
             {
-                Observations.Add(((Observation)e.Resource).Text.Div);
+                Observations.Add(((Observation)e.Resource).Effective.ToString() + ((Observation)e.Resource).Text.Div);
             }
 
             foreach (var e in encounterBundle.Entry)
             {
-                Encounters.Add(((Encounter)e.Resource).Text.Div);
+                Encounters.Add(((Encounter)e.Resource).Period.Start
+                    + ((Encounter)e.Resource).Text.Div);
             }
         }
     }

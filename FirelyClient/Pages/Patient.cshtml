@@ -7,77 +7,20 @@
 <h2>@{ @Model.Patient}</h2>
 
 <table>
-    <tr style="vertical-align: top">
-        <td>
-            <h3>Conditions</h3>
-            @{
-                if (Model.Conditions.Count == 0)
-                {
-                    <p>No recorded conditions.</p>
-                }
-                else
-                {
-                    <p>
-                        <ul class="list-group">
-                            @foreach (var condition in Model.Conditions)
-                            {
-                                <li>@condition</li>
-                            }
-                        </ul>
-                    </p>
-                }
-            }
+    <tr style="vertical-align: top; padding-left:10px">
+        <td style="padding-left:10px">
+            @await Component.InvokeAsync("ItemList", new { itemName = "Conditions", items = Model.Conditions })
         </td>
-        <td>
-            <h3>Observations</h3>
-            @{
-                if (Model.Observations.Count == 0)
-                {
-                    <p>No recorded observations.</p>
-                }
-                else
-                {
-                    @foreach (var observation in Model.Observations)
-                    {
-                        @Html.Raw(@observation)
-                    }
-                }
-            }
+        <td style="padding-left:10px">
+            @await Component.InvokeAsync("ItemList", new { itemName = "Observations", items = Model.Observations })
         </td>
     </tr>
     <tr style="vertical-align: top">
-        <td>
-            <h3>Medications</h3>
-            @{
-                if (Model.Medications.Count == 0)
-                {
-                    <p>No recorded medications.</p>
-                }
-                else
-                {
-                    <p>
-                        <ul class="list-group">
-                            @foreach (var medication in Model.Medications)
-                            {
-                                <li>@medication</li>
-                            }
-                        </ul>
-                    </p>
-                }
-            }
+        <td style="padding-left:10px">
+            @await Component.InvokeAsync("ItemList", new { itemName = "Medications", items = Model.Medications })
         </td>
-        <td>
-            <h3>Encounters</h3>
-            @{
-                if (Model.Encounters.Count == 0)
-                {
-                    <p>No recorded encounters.</p>
-                }
-                else
-                {
-                    @foreach (var encounter in Model.Encounters) @Html.Raw(encounter)
-                }
-            }
+        <td style="padding-left:10px">
+            @await Component.InvokeAsync("ItemList", new { itemName = "Encounters", items = Model.Encounters })
         </td>
     </tr>
 </table>

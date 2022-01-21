@@ -1,9 +1,16 @@
-﻿@model List<string>
+﻿@model FirelyClient.Pages.Shared.ViewComponents.Item
 
-<h3>Items</h3>
-<ul>
-    @foreach (var item in Model)
+<h3>@Model.ItemName</h3>
+@if (Model.Items.Count > 0)
+{
+
+    @foreach (var item in Model.Items)
     {
-        <li>@item</li>
+        <p>@Html.Raw(item)</p>
     }
-</ul>
+
+}
+else
+{
+    <p>No recorded @Model.ItemName</p>
+}
