@@ -1,4 +1,4 @@
-# Firely ASP.NET Core web application client using the Firely .NET SDK
+# ASP.NET Core web application client using the Firely .NET SDK
 FHIR Server must be defined in appsettings.json: `"FHIRServer": <server base url>`
 
 To run: 
