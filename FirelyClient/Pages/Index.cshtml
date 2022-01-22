@@ -24,6 +24,39 @@
         }
     </ul>
 
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @if (!Model.First.Equals(""))
+            {
+                <li class="page-item">
+
+                    <a class="page-link" href="@Model.First">first&nbsp;&nbsp;</a>
+                </li>
+            }
+
+            @if (!Model.Prev.Equals(""))
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Model.Prev">prev&nbsp;&nbsp;</a>
+                </li>
+            }
+
+            @if (!Model.Next.Equals(""))
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Model.Next">next&nbsp;&nbsp;</a>
+                </li>
+            }
+
+            @if (!Model.Last.Equals(""))
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Model.Last">last&nbsp;&nbsp;</a>
+                </li>
+            }
+        </ul>
+    </nav>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -44,3 +77,4 @@
         })</script>
 
 </div>
+&nbsp;&nbsp;

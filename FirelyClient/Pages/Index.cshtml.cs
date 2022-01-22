@@ -10,6 +10,7 @@ using Hl7.Fhir.Rest;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using FirelyClient.Pages.Utils;
+using Microsoft.Extensions.Primitives;
 
 namespace FirelyClient.Pages
 {
@@ -18,16 +19,22 @@ namespace FirelyClient.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
 
-        //public List<string> Patients;
         public List<Patient> Patients;
+        public string First;
+        public string Prev;
+        public string Next;
+        public string Last;
 
         public IndexModel(ILogger<IndexModel> logger,
             IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
-            //Patients = new List<string>();
             Patients = new List<Patient>();
+            First = "";
+            Prev = "";
+            Next = "";
+            Last = "";
         }
 
         public void OnGet()
@@ -39,12 +46,31 @@ namespace FirelyClient.Pages
                 PreferredReturn = Prefer.ReturnMinimal
             };
             var client = new FhirClient(_configuration["FHIRServer"], settings);
-            var result = client.Search<Patient>();
+
+            var searchParams = new string[] { };
+
+            var skip = Request.Query["_skip"];
+            if (skip != StringValues.Empty)
+            {
+                searchParams = searchParams.Append($"_skip={skip}").ToArray();
+            }
+
+            var count = Request.Query["_count"];
+            if (count != StringValues.Empty)
+            {
+                searchParams = searchParams.Append($"_count={count}").ToArray();
+            }
+
+            var result = client.Search<Patient>(searchParams);
             foreach (var e in result.Entry)
             {
-                //Patients.Add(GetPatientDescription((Patient)e.Resource));
                 Patients.Add((Patient)e.Resource);
             }
+
+            if (result.FirstLink != null) First = result.FirstLink.Query;
+            if (result.PreviousLink != null) Prev = result.PreviousLink.Query;
+            if (result.NextLink != null) Next = result.NextLink.Query;
+            if (result.LastLink != null) Last = result.LastLink.Query;
         }
     }
 }
