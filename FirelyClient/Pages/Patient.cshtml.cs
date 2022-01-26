@@ -68,7 +68,15 @@ namespace FirelyClient.Pages
             foreach (var e in conditionBundle.Entry)
             {
                 var condition = (Condition)e.Resource;
-                var conditionText = condition.RecordedDate.ToString() + " ";
+                var conditionText = "";
+                if (condition.RecordedDate != null)
+                {
+                    conditionText += condition.RecordedDate.ToString() + " ";
+                }
+                if (condition.Code != null)
+                {
+
+                }
                 if (condition.Code.Coding.Count > 0)
                 {
                     conditionText += condition.Code.Coding[0].Display;

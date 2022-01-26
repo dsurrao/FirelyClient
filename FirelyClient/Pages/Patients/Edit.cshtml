@@ -1,0 +1,50 @@
+﻿@page
+@model FirelyClient.Pages.Patients.EditModel
+@{
+}
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Create</h1>
+
+<h4>Movie</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Model.GivenName" class="control-label"></label>
+                <input asp-for="Model.GivenName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Model.FamilyName" class="control-label"></label>
+                <input asp-for="Model.FamilyName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Model.Gender" class="control-label"></label>
+                <select asp-for="Model.Gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Model.DateOfBirth" class="control-label"></label>
+                <input asp-for="Model.DateOfBirth" class="form-control" type="date" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </div>
+            <input asp-for="Model.Id" type="hidden" />
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
