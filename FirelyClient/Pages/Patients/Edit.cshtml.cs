@@ -14,7 +14,6 @@ namespace FirelyClient.Pages.Patients
     {
         private string id;
         private FhirClient client;
-        private Patient patient;
 
         public EditModel(IConfiguration configuration)
         {
@@ -39,7 +38,7 @@ namespace FirelyClient.Pages.Patients
         public async Task<IActionResult> OnGetAsync()
         {
             id = Request.Query["id"];
-            patient = await client.ReadAsync<Patient>("Patient/" + id);
+            var patient = await client.ReadAsync<Patient>("Patient/" + id);
             Model = new PatientModel();
             Model.Id = id;
             Model.GivenName = patient.Name[0].GivenElement[0].Value;
@@ -58,20 +57,20 @@ namespace FirelyClient.Pages.Patients
             var yyyy = Model.DateOfBirth.Year.ToString();
             var mm = Model.DateOfBirth.Month.ToString().PadLeft(2, '0');
             var dd = Model.DateOfBirth.Day.ToString().PadLeft(2, '0');
-            var updatedPatient = await client.UpdateAsync<Patient>(new Patient()
-            {
-                Id = Model.Id,
-                Name = new List<HumanName>()
+
+            var patient = await client.ReadAsync<Patient>("Patient/" + Model.Id);
+            patient.Name = new List<HumanName>()
+                {
+                    new HumanName()
                     {
-                        new HumanName()
-                        {
-                            Given = new List<string>() { Model.GivenName },
-                            Family = Model.FamilyName
-                        }
-                    },
-                Gender = Model.Gender,
-                BirthDate = $"{yyyy}-{mm}-{dd}"
-            });
+                        Given = new List<string>() { Model.GivenName },
+                        Family = Model.FamilyName
+                    }
+                };
+            patient.Gender = Model.Gender;
+            patient.BirthDate = $"{yyyy}-{mm}-{dd}";
+
+            var updatedPatient = await client.UpdateAsync<Patient>(patient);
 
             return RedirectToPage("/Index");
         }
