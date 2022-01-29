@@ -7,7 +7,7 @@ namespace FirelyClient.Pages.Utils
     {
         public static string GetPatientDescription(Patient patient)
         {
-            string name = "", gender = "", age = "";
+            string name = "", gender = "", age = "", dob = "";
 
             if (patient.Name.Count > 0)
             {
@@ -24,11 +24,12 @@ namespace FirelyClient.Pages.Utils
                 }
             }
 
-            gender = patient.Gender + ", ";
+            gender = patient.Gender.ToString();
 
             try
             {
                 var birthDate = DateTime.Parse(patient.BirthDate);
+                dob = birthDate.ToShortDateString();
                 age = $"{CalculateAge(birthDate)} y";
             }
             catch (FormatException)
@@ -40,7 +41,7 @@ namespace FirelyClient.Pages.Utils
                 Console.WriteLine("Birth date is null");
             }
 
-            return $"{name} ({gender}{age})";
+            return $"{name} ({gender}, {age}, {dob})";
         }
 
         public static int CalculateAge(DateTime dateTime)

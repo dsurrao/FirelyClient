@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using FirelyClient.Pages.Utils;
 using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FirelyClient.Pages
 {
     public class PatientModel : PageModel
     {
-        private readonly IConfiguration _configuration;
+        private readonly FhirClient _client;
 
-        public string id;
-        public string Patient;
+        public string Id { get; private set; }
+        public string Patient { get; private set; }
         public List<string> Conditions { get;  private set; }
         public List<string> Medications { get; private set; }
         public List<string> Observations { get; private set; }
@@ -22,40 +23,38 @@ namespace FirelyClient.Pages
 
         public PatientModel(IConfiguration configuration)
         {
-            _configuration = configuration;
             Patient = "";
             Conditions = new List<string>();
             Medications = new List<string>();
             Observations = new List<string>();
             Encounters = new List<string>();
+
+            _client = new FhirClient(configuration["FHIRServer"],
+                new FhirClientSettings
+                {
+                    PreferredFormat = ResourceFormat.Json,
+                    VerifyFhirVersion = true,
+                    PreferredReturn = Prefer.ReturnMinimal
+                });
         }
 
         /*
          * Annotation, Signature, Account, AdverseEvent, AllergyIntolerance, Appointment, AppointmentResponse, AuditEvent, Basic, BiologicallyDerivedProduct, BodyStructure, CarePlan, CareTeam, ChargeItem, Claim, ClaimResponse, ClinicalImpression, Communication, CommunicationRequest, Composition, Condition, Consent, Contract, Coverage, CoverageEligibilityRequest, CoverageEligibilityResponse, DetectedIssue, Device, DeviceRequest, DeviceUseStatement, DiagnosticReport, DocumentManifest, DocumentReference, Encounter, EnrollmentRequest, EpisodeOfCare, ExplanationOfBenefit, FamilyMemberHistory, Flag, Goal, Group, GuidanceResponse, ImagingStudy, Immunization, ImmunizationEvaluation, ImmunizationRecommendation, Invoice, List, MeasureReport, Media, MedicationAdministration, MedicationDispense, MedicationRequest, MedicationStatement, MolecularSequence, NutritionOrder, Observation, itself, Person, Procedure, Provenance, QuestionnaireResponse, RelatedPerson, RequestGroup, ResearchSubject, RiskAssessment, Schedule, ServiceRequest, Specimen, SupplyDelivery, SupplyRequest, Task and VisionPrescription
          */
-        public async System.Threading.Tasks.Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            id = Request.Query["id"];
+            Id = Request.Query["id"];
 
-            var settings = new FhirClientSettings
-            {
-                PreferredFormat = ResourceFormat.Json,
-                VerifyFhirVersion = true,
-                PreferredReturn = Prefer.ReturnMinimal
-            };
-            var client = new FhirClient(_configuration["FHIRServer"], settings);
+            Task<Patient> patientTask = _client.ReadAsync<Patient>("Patient/" + Id);
+            Task<Bundle> conditionTask = _client.SearchAsync<Condition>(
+                new string[] { "patient=" + Id });
+            Task<Bundle> medicationTask = _client.SearchAsync<MedicationRequest>(
+                new string[] { "patient=" + Id });
 
-
-            Task<Patient> patientTask = client.ReadAsync<Patient>("Patient/" + id);
-            Task<Bundle> conditionTask = client.SearchAsync<Condition>(
-                new string[] { "patient=" + id });
-            Task<Bundle> medicationTask = client.SearchAsync<MedicationRequest>(
-                new string[] { "patient=" + id });
-
-            Task<Bundle> observationTask = client.SearchAsync<Observation>(
-                new string[] { "patient=" + id });
-            Task<Bundle> encounterTask = client.SearchAsync<Encounter>(
-                new string[] { "patient=" + id });
+            Task<Bundle> observationTask = _client.SearchAsync<Observation>(
+                new string[] { "patient=" + Id });
+            Task<Bundle> encounterTask = _client.SearchAsync<Encounter>(
+                new string[] { "patient=" + Id });
 
             var patientBundle = await patientTask;
             var conditionBundle = await conditionTask;
@@ -113,6 +112,16 @@ namespace FirelyClient.Pages
                 Encounters.Add(((Encounter)e.Resource).Period.Start
                     + ((Encounter)e.Resource).Text.Div);
             }
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var id = Request.Form["Id"];
+            await _client.DeleteAsync($"Patient/{id}");
+
+            return RedirectToPage("/Index");
         }
     }
 }

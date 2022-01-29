@@ -6,8 +6,6 @@
 
 <h2>@{ @Model.Patient}</h2>
 
-<div><a href="/Patients/Edit?id=@Model.id">Edit</a></div>
-
 <table>
     <tr style="vertical-align: top; padding-left:10px">
         <td style="padding-left:10px">
@@ -26,3 +24,11 @@
         </td>
     </tr>
 </table>
+
+<form method="post">
+    <div class="form-group">
+        <input type="hidden" asp-for="@Model.Id" />
+        <a class="btn btn-primary" href="/Patients/Edit?id=@Model.Id" role="button">Edit</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    </div>
+</form>
