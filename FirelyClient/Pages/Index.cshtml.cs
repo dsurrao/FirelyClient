@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using Microsoft.Extensions.Configuration;
-using System.Globalization;
-using FirelyClient.Pages.Utils;
-using Microsoft.Extensions.Primitives;
 
 namespace FirelyClient.Pages
 {
@@ -24,6 +19,7 @@ namespace FirelyClient.Pages
         public string Prev;
         public string Next;
         public string Last;
+        public string NameParam;
 
         public IndexModel(ILogger<IndexModel> logger,
             IConfiguration configuration)
@@ -39,6 +35,8 @@ namespace FirelyClient.Pages
 
         public void OnGet()
         {
+            NameParam = Request.Query["NameParam"];
+
             var settings = new FhirClientSettings
             {
                 PreferredFormat = ResourceFormat.Json,
@@ -47,21 +45,20 @@ namespace FirelyClient.Pages
             };
             var client = new FhirClient(_configuration["FHIRServer"], settings);
 
-            var searchParams = new string[] { };
-
-            var skip = Request.Query["_skip"];
-            if (skip != StringValues.Empty)
+            var searchParams = new List<string>();
+            if (NameParam != null && !NameParam.Trim().Equals(""))
             {
-                searchParams = searchParams.Append($"_skip={skip}").ToArray();
+                searchParams.Add($"name:contains={NameParam}");
             }
 
-            var count = Request.Query["_count"];
-            if (count != StringValues.Empty)
+            var allowedKeys = new string[] { "_count", "_skip" };
+            foreach (var key in Request.Query.Keys.Where(
+                key => allowedKeys.Contains(key)))
             {
-                searchParams = searchParams.Append($"_count={count}").ToArray();
+                searchParams.Add($"{key}={Request.Query[key]}");
             }
 
-            var result = client.Search<Patient>(searchParams);
+            var result = client.Search<Patient>(searchParams.ToArray());
             foreach (var e in result.Entry)
             {
                 Patients.Add((Patient)e.Resource);

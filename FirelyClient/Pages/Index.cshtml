@@ -7,9 +7,20 @@
 
 <div class="text-center">
     <h1 class="display-4">Patient List</h1>
+
+    <form>
+        <label asp-for="@Model.NameParam" />
+        <input asp-for="@Model.NameParam" />
+        <input type="submit"/>
+    </form>
 </div>
 
 <div>
+    @if (Model.Patients.Count == 0)
+    {
+        <p>No patients found.</p>
+    }
+
     <ul class="list-group">
         @foreach (var patient in Model.Patients)
         {
@@ -26,29 +37,28 @@
             @if (!Model.First.Equals(""))
             {
                 <li class="page-item">
-
-                    <a class="page-link" href="@Model.First">first&nbsp;&nbsp;</a>
+                    <a class="page-link" href="@Model.First&NameParam=@Model.NameParam">first&nbsp;&nbsp;</a>
                 </li>
             }
 
             @if (!Model.Prev.Equals(""))
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Model.Prev">prev&nbsp;&nbsp;</a>
+                    <a class="page-link" href="@Model.Prev&NameParam=@Model.NameParam">prev&nbsp;&nbsp;</a>
                 </li>
             }
 
             @if (!Model.Next.Equals(""))
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Model.Next">next&nbsp;&nbsp;</a>
+                    <a class="page-link" href="@Model.Next&NameParam=@Model.NameParam">next&nbsp;&nbsp;</a>
                 </li>
             }
 
             @if (!Model.Last.Equals(""))
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Model.Last">last&nbsp;&nbsp;</a>
+                    <a class="page-link" href="@Model.Last&NameParam=@Model.NameParam">last&nbsp;&nbsp;</a>
                 </li>
             }
         </ul>

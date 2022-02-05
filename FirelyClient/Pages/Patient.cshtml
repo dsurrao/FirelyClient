@@ -29,6 +29,10 @@
 <a class="btn btn-primary" href="/Patients/Edit?id=@Model.Id" role="button">Edit</a>
 <button type="button" class="btn btn-danger"
        data-toggle="modal" data-target="#confirmDelete">Delete</button>
+<p>
+    <br />
+    <button class="btn btn-link" onclick="history.go(-1)">Go Back</button>
+</p>
 
 <!-- Confirm Delete Modal -->
 <div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog">
