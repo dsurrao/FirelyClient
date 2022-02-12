@@ -1,0 +1,41 @@
+﻿@page
+@model FirelyClient.Pages.Observations.BloodPressureModel
+@{
+}
+
+<form method="post">
+    <table>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Model.Systolic">Systolic</label>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input asp-for="Model.Systolic" />
+                    <span asp-validation-for="Model.Systolic" class="text-danger"></span>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label asp-for="Model.Diastolic">Diastolic</label>
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input asp-for="Model.Diastolic" />
+                    <span asp-validation-for="Model.Diastolic" class="text-danger"></span>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+    <div class="form-group">
+        <input asp-for="Model.PatientId" type="hidden" />
+        <input type="submit" />
+    </div>
+</form>

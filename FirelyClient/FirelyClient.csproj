@@ -10,6 +10,7 @@
     <None Remove="Pages\Shared\ViewComponents\" />
     <None Remove="Pages\Shared\Components\" />
     <None Remove="Pages\Patients\" />
+    <None Remove="Pages\Observations\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hl7.Fhir.R4" Version="3.8.0" />
@@ -19,5 +20,6 @@
     <Folder Include="Pages\Shared\ViewComponents\" />
     <Folder Include="Pages\Shared\Components\" />
     <Folder Include="Pages\Patients\" />
+    <Folder Include="Pages\Observations\" />
   </ItemGroup>
 </Project>
